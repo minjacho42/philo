@@ -1,18 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philo_test.c                                       :+:      :+:    :+:   */
+/*   philo_free.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: minjacho <minjacho@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/12/28 12:38:13 by minjacho          #+#    #+#             */
-/*   Updated: 2023/12/28 13:59:48 by minjacho         ###   ########.fr       */
+/*   Created: 2024/01/12 12:38:00 by minjacho          #+#    #+#             */
+/*   Updated: 2024/01/12 12:40:03 by minjacho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int main(int argc, char *argv[])
+void	free_mutex(pthread_mutex_t *mutex, int size)
 {
-	
+	int	idx;
+
+	idx = 0;
+	while (idx < size)
+	{
+		pthread_mutex_destroy(&mutex[idx]);
+		idx++;
+	}
+	free(mutex);
 }
