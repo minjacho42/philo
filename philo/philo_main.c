@@ -6,7 +6,7 @@
 /*   By: minjacho <minjacho@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/28 12:38:13 by minjacho          #+#    #+#             */
-/*   Updated: 2024/01/12 13:08:37 by minjacho         ###   ########.fr       */
+/*   Updated: 2024/01/14 13:41:56 by minjacho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,18 +41,26 @@ static int	init_thread_info(t_info *info)
 	return (0);
 }
 
-static int	init_philo_arg(t_info *info, t_philo_arg *arg, int idx)
+static void	init_philo_arg(t_info *info, t_philo_arg *arg, int idx)
 {
 	arg->seat_idx = idx + 1;
-	arg->l_fork = &info->forks[idx];
-	arg->r_fork = &info->forks[(idx + 1) % info->num_of_philo];
+	if (idx % 2 == 0)
+	{
+		arg->l_fork = &info->forks[idx];
+		arg->r_fork = &info->forks[(idx + 1) % info->num_of_philo];
+	}
+	else
+	{
+		arg->r_fork = &info->forks[idx];
+		arg->l_fork = &info->forks[(idx + 1) % info->num_of_philo];
+	}
 	arg->printer = info->printer;
 	arg->die = 0;
 	arg->num_of_philo = info->num_of_philo;
 	arg->time_to_die = info->time_to_die;
 	arg->time_to_eat = info->time_to_eat;
 	arg->time_to_sleep = info->time_to_sleep;
-	arg->must_eat = info->must_eat;
+	arg->eat_cnt = 0;
 	arg->last_eat_time = 0;
 }
 
@@ -110,14 +118,48 @@ int main(int argc, char *argv[])
 {
 	t_info	info;
 	int		idx;
+	int		eat_done;
+	long long	cur_time;
+	int		died;
 
 	if (argc < 5 || argc > 6)
 		return (1);
 	if (init_info(argc, argv, &info) == 1)
 		return (1);
 	idx = 0;
+	cur_time = get_time_mili_sc();
 	while (idx < info.num_of_philo)
 	{
-
+		info.philo_args[idx].start_time = cur_time;
+		info.philo_args[idx].last_eat_time = cur_time;
+		pthread_create(&info.philo_thread[idx], NULL, philo_routine, &info.philo_args[idx]);
+		idx++;
+	}
+	while (1)
+	{
+		idx = 0;
+		eat_done = 0;
+		died = 0;
+		while (idx < info.num_of_philo)
+		{
+			cur_time = get_time_mili_sc();
+			if (cur_time - info.philo_args[idx].last_eat_time > info.time_to_die)
+			{
+				philo_print(info.printer, idx + 1, "died", info.philo_args[idx].start_time);
+				died = 1;
+				break;
+			}
+			if (info.must_eat > 0 && info.philo_args[idx].eat_cnt >= info.must_eat)
+				eat_done++;
+			idx++;
+		}
+		if (eat_done == info.num_of_philo || died)
+			break;
+		usleep(100);
+	}
+	while (idx < info.num_of_philo)
+	{
+		pthread_detach(info.philo_thread[idx]);
+		idx++;
 	}
 }

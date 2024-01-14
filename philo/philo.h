@@ -6,7 +6,7 @@
 /*   By: minjacho <minjacho@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/28 12:37:16 by minjacho          #+#    #+#             */
-/*   Updated: 2024/01/12 13:18:04 by minjacho         ###   ########.fr       */
+/*   Updated: 2024/01/14 13:34:36 by minjacho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,8 @@ typedef struct s_philo_arg
 	long long		time_to_eat;
 	long long		time_to_sleep;
 	long long		last_eat_time;
-	int				must_eat;
+	long long		start_time;
+	int				eat_cnt;
 }	t_philo_arg;
 
 typedef struct s_info
@@ -47,7 +48,10 @@ typedef struct s_info
 	int				must_eat;
 }	t_info;
 
-int		philo_atoi(const char *str);
-int		philo_atoll(const char *str);
-void	free_mutex(pthread_mutex_t *mutex, int size);
+int			philo_atoi(const char *str);
+int			philo_atoll(const char *str);
+void		*philo_routine(void *philo_arg);
+void		free_mutex(pthread_mutex_t *mutex, int size);
+long long	get_time_mili_sc(void);
+void	philo_print(pthread_mutex_t *printer, int num, char *msg_str, long long start_time);
 #endif
