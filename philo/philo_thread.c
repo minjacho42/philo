@@ -6,19 +6,18 @@
 /*   By: minjacho <minjacho@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/12 13:00:47 by minjacho          #+#    #+#             */
-/*   Updated: 2024/01/14 13:38:49 by minjacho         ###   ########.fr       */
+/*   Updated: 2024/01/15 20:47:47 by minjacho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	philo_print(pthread_mutex_t *printer, int num, char *msg_str, long long start_time)
+void	philo_print(t_philo_arg *arg, char *msg_str)
 {
-	long long	cur_time = get_time_mili_sc();
-
-	pthread_mutex_lock(printer);
-	printf("%lld %d %s\n", cur_time - start_time, num, msg_str);
-	pthread_mutex_unlock(printer);
+	pthread_mutex_lock(arg->printer);
+	if (!*(arg->died))
+		printf("%lld %d %s\n", get_time_mili_sc() - arg->start_time, arg->seat_idx, msg_str);
+	pthread_mutex_unlock(arg->printer);
 }
 
 void	*philo_routine(void *philo_arg)
@@ -30,7 +29,7 @@ void	*philo_routine(void *philo_arg)
 	arg = (t_philo_arg *)philo_arg;
 	while (1)
 	{
-		philo_print(arg->printer, arg->seat_idx, "is thinking", arg->start_time);
+		philo_print(arg, "is thinking");
 		if (arg->eat_cnt == 0)
 		{
 			if (arg->seat_idx % 2 == 0)
@@ -39,12 +38,10 @@ void	*philo_routine(void *philo_arg)
 				usleep(200);
 		}
 		pthread_mutex_lock(arg->l_fork);
-		philo_print(arg->printer, arg->seat_idx, \
-					"has taken a fork", arg->start_time);
+		philo_print(arg, "has taken a fork");
 		pthread_mutex_lock(arg->r_fork);
-		philo_print(arg->printer, arg->seat_idx, \
-					"has taken a fork", arg->start_time);
-		philo_print(arg->printer, arg->seat_idx, "is eating", arg->start_time);
+		philo_print(arg, "has taken a fork");
+		philo_print(arg, "is eating");
 		arg->last_eat_time = get_time_mili_sc();
 		start_time = arg->last_eat_time;
 		end_time = start_time;
@@ -55,7 +52,7 @@ void	*philo_routine(void *philo_arg)
 		}
 		pthread_mutex_unlock(arg->l_fork);
 		pthread_mutex_unlock(arg->r_fork);
-		philo_print(arg->printer, arg->seat_idx, "is sleeping", arg->start_time);
+		philo_print(arg, "is sleeping");
 		start_time = get_time_mili_sc();
 		end_time = start_time;
 		while (end_time - start_time < arg->time_to_sleep)
