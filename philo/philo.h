@@ -6,7 +6,7 @@
 /*   By: minjacho <minjacho@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/28 12:37:16 by minjacho          #+#    #+#             */
-/*   Updated: 2024/01/15 20:46:30 by minjacho         ###   ########.fr       */
+/*   Updated: 2024/01/15 21:33:39 by minjacho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,5 +54,5 @@ int			philo_atoll(const char *str);
 void		*philo_routine(void *philo_arg);
 void		free_mutex(pthread_mutex_t *mutex, int size);
 long long	get_time_mili_sc(void);
-void	philo_print(t_philo_arg *arg, char *msg_str);
+void	philo_print(t_philo_arg *arg, long long time, char *msg_str);
 #endif

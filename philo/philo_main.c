@@ -6,7 +6,7 @@
 /*   By: minjacho <minjacho@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/28 12:38:13 by minjacho          #+#    #+#             */
-/*   Updated: 2024/01/15 20:50:46 by minjacho         ###   ########.fr       */
+/*   Updated: 2024/01/15 22:09:29 by minjacho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,19 +44,10 @@ static int	init_thread_info(t_info *info)
 static void	init_philo_arg(t_info *info, t_philo_arg *arg, int idx)
 {
 	arg->seat_idx = idx + 1;
-	if (idx % 2 == 0)
-	{
-		arg->l_fork = &info->forks[idx];
-		arg->r_fork = &info->forks[(idx + 1) % info->num_of_philo];
-	}
-	else
-	{
-		arg->r_fork = &info->forks[idx];
-		arg->l_fork = &info->forks[(idx + 1) % info->num_of_philo];
-	}
+	arg->l_fork = &info->forks[idx];
+	arg->r_fork = &info->forks[(idx + 1) % info->num_of_philo];
 	arg->printer = info->printer;
 	arg->num_of_philo = info->num_of_philo;
-	arg->time_to_die = info->time_to_die;
 	arg->time_to_eat = info->time_to_eat;
 	arg->time_to_sleep = info->time_to_sleep;
 	arg->eat_cnt = 0;
@@ -126,8 +117,8 @@ int main(int argc, char *argv[])
 	if (init_info(argc, argv, &info) == 1)
 		return (1);
 	idx = 0;
-	cur_time = get_time_mili_sc();
 	info.died = 0;
+	cur_time = get_time_mili_sc();
 	while (idx < info.num_of_philo)
 	{
 		info.philo_args[idx].start_time = cur_time;
