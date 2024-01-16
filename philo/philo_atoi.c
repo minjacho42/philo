@@ -6,24 +6,11 @@
 /*   By: minjacho <minjacho@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/12 12:08:31 by minjacho          #+#    #+#             */
-/*   Updated: 2024/01/14 13:21:44 by minjacho         ###   ########.fr       */
+/*   Updated: 2024/01/16 17:30:03 by minjacho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-static int	ft_isspace(char c)
-{
-	if (c == '\t' || c == '\n' || c == '\v'\
-		|| c == '\f' || c == '\r' || c == ' ')
-		return (1);
-	return (0);
-}
-
-static int	ft_isdigit(char c)
-{
-	if (c >= '0' && c <= '9')
-		return (1);
-	return (0);
-}
+#include "philo.h"
 
 static int	has_overflow_ll(long long num, int next_digit)
 {
