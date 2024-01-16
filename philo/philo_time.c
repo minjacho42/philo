@@ -6,7 +6,7 @@
 /*   By: minjacho <minjacho@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/14 12:33:54 by minjacho          #+#    #+#             */
-/*   Updated: 2024/01/16 17:31:34 by minjacho         ###   ########.fr       */
+/*   Updated: 2024/01/17 00:28:36 by minjacho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,11 @@ long long	get_time_mili_sc(void)
 	return (time);
 }
 
-void	spend_time(t_philo_arg *arg, long long start_time, \
-					long long time_to_spend)
+void	spend_time(long long time_to_spend)
 {
-	usleep(500);
-	while (get_time_mili_sc() - start_time < time_to_spend && !arg->died)
+	long long	start_time;
+
+	start_time = get_time_mili_sc();
+	while (time_to_spend + start_time > get_time_mili_sc())
 		usleep(100);
 }

@@ -6,11 +6,45 @@
 /*   By: minjacho <minjacho@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/16 17:31:46 by minjacho          #+#    #+#             */
-/*   Updated: 2024/01/16 17:32:16 by minjacho         ###   ########.fr       */
+/*   Updated: 2024/01/16 23:56:37 by minjacho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+static int	init_thread_info_sub(t_info *info)
+{
+	int	idx;
+
+	info->last_eat_mutex = malloc(sizeof(pthread_mutex_t) * info->num_of_philo);
+	if (!info->last_eat_mutex)
+	{
+		free_mutex(info->forks, info->num_of_philo);
+		free_mutex(info->die_mutex, info->num_of_philo);
+		return (1);
+	}
+	idx = -1;
+	while (++idx < info->num_of_philo)
+		pthread_mutex_init(&info->last_eat_mutex[idx], NULL);
+	info->printer = malloc(sizeof(pthread_mutex_t));
+	if (!info->printer)
+	{
+		free_mutex(info->forks, info->num_of_philo);
+		free_mutex(info->die_mutex, info->num_of_philo);
+		free_mutex(info->last_eat_mutex, info->num_of_philo);
+		return (1);
+	}
+	info->philo_thread = malloc(sizeof(pthread_t) * info->num_of_philo);
+	if (!info->philo_thread)
+	{
+		free_mutex(info->forks, info->num_of_philo);
+		free_mutex(info->die_mutex, info->num_of_philo);
+		free_mutex(info->last_eat_mutex, info->num_of_philo);
+		free_mutex(info->printer, 1);
+		return (1);
+	}
+	return (0);
+}
 
 static int	init_thread_info(t_info *info)
 {
@@ -19,25 +53,20 @@ static int	init_thread_info(t_info *info)
 	info->forks = malloc(sizeof(pthread_mutex_t) * info->num_of_philo);
 	if (!info->forks)
 		return (1);
-	idx = 0;
-	while (idx < info->num_of_philo)
-	{
+	idx = -1;
+	while (++idx < info->num_of_philo)
 		pthread_mutex_init(&info->forks[idx], NULL);
-		idx++;
-	}
-	info->printer = malloc(sizeof(pthread_mutex_t));
-	if (!info->printer)
+	info->die_mutex = malloc(sizeof(pthread_mutex_t) * info->num_of_philo);
+	if (!info->die_mutex)
 	{
 		free_mutex(info->forks, info->num_of_philo);
 		return (1);
 	}
-	info->philo_thread = malloc(sizeof(pthread_t) * info->num_of_philo);
-	if (!info->philo_thread)
-	{
-		free_mutex(info->forks, info->num_of_philo);
-		free_mutex(info->printer, 1);
+	idx = -1;
+	while (++idx < info->num_of_philo)
+		pthread_mutex_init(&info->die_mutex[idx], NULL);
+	if (init_thread_info_sub(info))
 		return (1);
-	}
 	return (0);
 }
 
@@ -46,6 +75,8 @@ static void	init_philo_arg(t_info *info, t_philo_arg *arg, int idx)
 	arg->seat_idx = idx + 1;
 	arg->l_fork = &info->forks[idx];
 	arg->r_fork = &info->forks[(idx + 1) % info->num_of_philo];
+	arg->die_mutex = &info->die_mutex[idx];
+	arg->last_eat_mutex = &info->last_eat_mutex[idx];
 	arg->printer = info->printer;
 	arg->num_of_philo = info->num_of_philo;
 	arg->time_to_eat = info->time_to_eat;

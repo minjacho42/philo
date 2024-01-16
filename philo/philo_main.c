@@ -6,7 +6,7 @@
 /*   By: minjacho <minjacho@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/28 12:38:13 by minjacho          #+#    #+#             */
-/*   Updated: 2024/01/16 17:37:56 by minjacho         ###   ########.fr       */
+/*   Updated: 2024/01/16 23:52:30 by minjacho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ static long long	monitor_main(t_info *info)
 		check_time = get_time_mili_sc();
 		while (!info->died && idx < info->num_of_philo)
 		{
-			if (check_time - info->philo_args[idx].last_eat_time > \
+			if (check_time - get_last_eat(&info->philo_args[idx]) > \
 					info->time_to_die)
 				info->died = 1;
 			if (info->must_eat > 0 && info->philo_args[idx].eat_cnt >= \
@@ -51,6 +51,7 @@ int	main(int argc, char *argv[])
 	if (init_info(argc, argv, &info) == 1)
 		return (1);
 	run_philo(&info);
+	info.died = 0;
 	check_time = monitor_main(&info);
 	kill_philo(&info);
 	if (info.died)

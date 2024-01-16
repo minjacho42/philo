@@ -8,7 +8,7 @@ OBJS = $(SRCS:.c=.o)
 OBJS_BONUS = $(SRCS_BONUS:.c=.o)
 DEPS = $(SRCS:.c=.d)
 DEPS_BONUS = $(SRCS_BONUS:.c=.d)
-CC = cc -Wall -Wextra -Werror -MMD -MP
+CC = cc -Wall -Wextra -Werror -MMD -MP -g -fsanitize=thread
 NAME = philo
 MANDA = .manda
 BONUS = .bonus

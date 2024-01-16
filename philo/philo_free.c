@@ -6,7 +6,7 @@
 /*   By: minjacho <minjacho@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/12 12:38:00 by minjacho          #+#    #+#             */
-/*   Updated: 2024/01/16 17:36:48 by minjacho         ###   ########.fr       */
+/*   Updated: 2024/01/16 23:55:49 by minjacho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void	kill_philo(t_info *info)
 	idx = 0;
 	while (idx < info->num_of_philo)
 	{
-		info->philo_args[idx].died = 1;
+		set_die(&info->philo_args[idx]);
 		idx++;
 	}
 	idx = 0;
@@ -45,17 +45,11 @@ void	kill_philo(t_info *info)
 
 void	free_resource(t_info *info)
 {
-	int	idx;
-
-	idx = 0;
-	while (idx < info->num_of_philo)
-	{
-		pthread_mutex_destroy(&info->forks[idx]);
-		idx++;
-	}
+	free_mutex(info->forks, info->num_of_philo);
+	free_mutex(info->die_mutex, info->num_of_philo);
+	free_mutex(info->last_eat_mutex, info->num_of_philo);
 	pthread_mutex_destroy(info->printer);
 	free(info->philo_thread);
-	free(info->forks);
 	free(info->philo_args);
 	free(info->printer);
 }
