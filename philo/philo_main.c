@@ -6,7 +6,7 @@
 /*   By: minjacho <minjacho@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/28 12:38:13 by minjacho          #+#    #+#             */
-/*   Updated: 2024/01/15 22:09:29 by minjacho         ###   ########.fr       */
+/*   Updated: 2024/01/16 09:38:15 by minjacho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ static void	init_philo_arg(t_info *info, t_philo_arg *arg, int idx)
 	arg->num_of_philo = info->num_of_philo;
 	arg->time_to_eat = info->time_to_eat;
 	arg->time_to_sleep = info->time_to_sleep;
+	arg->time_to_die = info->time_to_die;
 	arg->eat_cnt = 0;
 	arg->last_eat_time = 0;
 }
@@ -124,34 +125,43 @@ int main(int argc, char *argv[])
 		info.philo_args[idx].start_time = cur_time;
 		info.philo_args[idx].last_eat_time = cur_time;
 		info.philo_args[idx].died = &info.died;
+		idx++;
+	}
+	idx = 0;
+	while (idx < info.num_of_philo){
+		// printf("cur time : %lld, died : %d\n", cur_time, info.died);
 		pthread_create(&info.philo_thread[idx], NULL, philo_routine, &info.philo_args[idx]);
 		idx++;
 	}
-	while (1)
+	while (!info.died)
 	{
-		idx = 0;
-		eat_done = 0;
-		while (idx < info.num_of_philo)
-		{
-			cur_time = get_time_mili_sc();
-			if (cur_time - info.philo_args[idx].last_eat_time > info.time_to_die)
-			{
-				info.died = 1;
-				printf("%lld %d %s\n", get_time_mili_sc() - info.philo_args[idx].start_time, \
-							idx + 1, "died");
-				break;
-			}
-			if (info.must_eat > 0 && info.philo_args[idx].eat_cnt >= info.must_eat)
-				eat_done++;
-			idx++;
-		}
-		if (eat_done == info.num_of_philo || info.died)
-			break;
 		usleep(100);
 	}
+	// while (1)
+	// {
+	// 	idx = 0;
+	// 	eat_done = 0;
+	// 	while (idx < info.num_of_philo)
+	// 	{
+	// 		cur_time = get_time_mili_sc();
+	// 		if (cur_time - info.philo_args[idx].last_eat_time > info.time_to_die)
+	// 		{
+	// 			info.died = 1;
+	// 			printf("%lld %d %s\n", get_time_mili_sc() - info.philo_args[idx].start_time, \
+	// 						idx + 1, "died");
+	// 			break;
+	// 		}
+	// 		if (info.must_eat > 0 && info.philo_args[idx].eat_cnt >= info.must_eat)
+	// 			eat_done++;
+	// 		idx++;
+	// 	}
+	// 	if (eat_done == info.num_of_philo || info.died)
+	// 		break;
+	// 	usleep(100);
+	// }
 	while (idx < info.num_of_philo)
 	{
-		pthread_detach(info.philo_thread[idx]);
+		pthread_join(info.philo_thread[idx], NULL);
 		idx++;
 	}
 }
