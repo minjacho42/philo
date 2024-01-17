@@ -6,7 +6,7 @@
 /*   By: minjacho <minjacho@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/17 13:34:20 by minjacho          #+#    #+#             */
-/*   Updated: 2024/01/17 19:07:08 by minjacho         ###   ########.fr       */
+/*   Updated: 2024/01/17 21:17:37 by minjacho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ void	free_mutexs(t_mutexs *mutexs, t_args *arg)
 {
 	free_one_mutex(mutexs->forks, arg->num_of_philo);
 	free_one_mutex(mutexs->cnt_mutex, arg->num_of_philo);
+	free_one_mutex(mutexs->last_eat_mutex, arg->num_of_philo);
 	free_one_mutex(mutexs->checker, 1);
 	free_one_mutex(mutexs->printer, 1);
 }
