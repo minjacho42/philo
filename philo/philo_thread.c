@@ -5,89 +5,131 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: minjacho <minjacho@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/01/12 13:00:47 by minjacho          #+#    #+#             */
-/*   Updated: 2024/01/17 10:39:23 by minjacho         ###   ########.fr       */
+/*   Created: 2024/01/17 14:55:08 by minjacho          #+#    #+#             */
+/*   Updated: 2024/01/17 21:10:41 by minjacho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	philo_print(t_philo_arg *arg, long long time, char *msg_str, \
-						int die_print)
+static int	pick_fork(t_philo_info *philo_info)
 {
-	pthread_mutex_lock(arg->printer);
-	if (!get_die(arg) || die_print)
-		printf("%lld %d %s\n", time - arg->start_time, arg->seat_idx, msg_str);
-	pthread_mutex_unlock(arg->printer);
-}
-
-static int	first_think(t_philo_arg *arg)
-{
-	if (arg->seat_idx % 2 == 0)
-		usleep(100);
-	return (0);
-}
-
-static int	philo_think(t_philo_arg *arg)
-{
-	philo_print(arg, get_time_mili_sc(), "is thinking", 0);
-	if (get_eat_cnt(arg) == 0)
-		first_think(arg);
-	pthread_mutex_lock(arg->l_fork);
-	philo_print(arg, get_time_mili_sc(), "has taken a fork", 0);
-	pthread_mutex_lock(arg->r_fork);
-	philo_print(arg, get_time_mili_sc(), "has taken a fork", 0);
-	return (0);
-}
-
-void	*philo_routine(void *philo_arg)
-{
-	t_philo_arg	*arg;
-
-	arg = (t_philo_arg *)philo_arg;
-	while (!get_die(arg))
+	pthread_mutex_lock(&philo_info->mutexs->\
+			forks[philo_info->seat_idx - 1]);
+	print_state(philo_info, 4);
+	if (philo_info->arg->num_of_philo == 1)
 	{
-		philo_think(arg);
-		if (get_die(arg))
-		{
-			pthread_mutex_unlock(arg->l_fork);
-			pthread_mutex_unlock(arg->r_fork);
-			break ;
-		}
-		philo_print(arg, get_time_mili_sc(), "is eating", 0);
-		set_last_eat(arg);
-		spend_time(arg->time_to_eat);
-		pthread_mutex_unlock(arg->l_fork);
-		pthread_mutex_unlock(arg->r_fork);
-		set_eat_cnt(arg);
-		if (get_die(arg))
-			break ;
-		philo_print(arg, get_time_mili_sc(), "is sleeping", 0);
-		spend_time(arg->time_to_sleep);
+		while (!check_died(philo_info->arg, philo_info->mutexs))
+			usleep(100);
+		return (1);
+	}
+	pthread_mutex_lock(&philo_info->mutexs->\
+			forks[philo_info->seat_idx % philo_info->arg->num_of_philo]);
+	print_state(philo_info, 4);
+	return (0);
+}
+
+static int	philo_think_eat(t_philo_info *philo_info)
+{
+	if (pick_fork(philo_info))
+		return (1);
+	if (check_died(philo_info->arg, philo_info->mutexs))
+	{
+		pthread_mutex_unlock(&philo_info->mutexs->\
+			forks[philo_info->seat_idx - 1]);
+		pthread_mutex_unlock(&philo_info->mutexs->\
+			forks[philo_info->seat_idx % philo_info->arg->num_of_philo]);
+		return (1);
+	}
+	print_state(philo_info, 1);
+	set_last_eat(philo_info, get_time_milisc());
+	spend_time(philo_info->arg->time_to_eat);
+	pthread_mutex_unlock(&philo_info->mutexs->\
+			forks[philo_info->seat_idx - 1]);
+	pthread_mutex_unlock(&philo_info->mutexs->\
+			forks[philo_info->seat_idx % philo_info->arg->num_of_philo]);
+	set_eat_cnt(philo_info);
+	return (0);
+}
+
+void	*philo_routine(void *info)
+{
+	t_philo_info	*philo_info;
+
+	philo_info = info;
+	print_state(philo_info, 3);
+	if (!(philo_info->seat_idx % 2))
+		spend_time(philo_info->arg->time_to_eat);
+	while (!check_died(philo_info->arg, philo_info->mutexs))
+	{
+		if (philo_think_eat(philo_info))
+			return (NULL);
+		if (check_died(philo_info->arg, philo_info->mutexs))
+			return (NULL);
+		print_state(philo_info, 2);
+		if (check_died(philo_info->arg, philo_info->mutexs))
+			return (NULL);
+		spend_time(philo_info->arg->time_to_sleep);
+		if (check_died(philo_info->arg, philo_info->mutexs))
+			return (NULL);
+		print_state(philo_info, 3);
 	}
 	return (NULL);
 }
 
-void	run_philo(t_info *info)
+void	monitor_main(t_args *arg, t_mutexs *mutexs, t_philo_info *philo_infos)
 {
-	int			idx;
-	long long	cur_time;
+	int	idx;
+	int	done_eat_cnt;
+
+	while (!check_died(arg, mutexs))
+	{
+		idx = -1;
+		done_eat_cnt = 0;
+		while (++idx < arg->num_of_philo)
+		{
+			if (check_last_eat(&philo_infos[idx]) + arg->time_to_die <= \
+				get_time_milisc())
+			{
+				set_died(arg, mutexs);
+				print_state(&philo_infos[idx], 5);
+				break ;
+			}
+			if (arg->must_eat > 0 && \
+				check_eat_cnt(&philo_infos[idx]) >= arg->must_eat)
+				done_eat_cnt++;
+		}
+		if (done_eat_cnt >= arg->num_of_philo)
+			break ;
+		usleep(100);
+	}
+	set_died(arg, mutexs);
+}
+
+void	run_philo_thread(t_args *arg, t_mutexs *mutexs, pthread_t *threads, \
+							t_philo_info *philo_infos)
+{
+	int	idx;
 
 	idx = 0;
-	cur_time = get_time_mili_sc();
-	info->start_time = cur_time;
-	while (idx < info->num_of_philo)
+	while (idx < arg->num_of_philo)
 	{
-		info->philo_args[idx].start_time = cur_time;
-		info->philo_args[idx].last_eat_time = cur_time;
-		info->philo_args[idx].died = 0;
+		philo_infos[idx].arg = arg;
+		philo_infos[idx].mutexs = mutexs;
+		philo_infos[idx].eat_cnt = 0;
+		philo_infos[idx].seat_idx = idx + 1;
 		idx++;
 	}
 	idx = 0;
-	while (idx < info->num_of_philo)
+	arg->start_time = get_time_milisc();
+	while (idx < arg->num_of_philo)
 	{
-		pthread_create(&info->philo_thread[idx], NULL, \
-						philo_routine, &info->philo_args[idx]);
+		philo_infos[idx].last_eat = arg->start_time;
+		pthread_create(&threads[idx], NULL, philo_routine, &philo_infos[idx]);
 		idx++;
 	}
+	monitor_main(arg, mutexs, philo_infos);
+	idx = -1;
+	while (++idx < arg->num_of_philo)
+		pthread_join(threads[idx], NULL);
 }

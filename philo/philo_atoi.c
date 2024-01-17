@@ -6,7 +6,7 @@
 /*   By: minjacho <minjacho@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/12 12:08:31 by minjacho          #+#    #+#             */
-/*   Updated: 2024/01/16 17:30:03 by minjacho         ###   ########.fr       */
+/*   Updated: 2024/01/17 18:44:18 by minjacho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ int	philo_atoi(const char *str)
 	return (num);
 }
 
-int	philo_atoll(const char *str)
+long long	philo_atoll(const char *str)
 {
 	int			i;
 	long long	num;

@@ -1,15 +1,14 @@
 .DEFAULT_GOAL := all
 SRCS = \
-		philo_atoi.c philo_alloc.c philo_init.c \
-		philo_main.c philo_thread.c philo_time.c \
-		philo_util.c philo_util_mutex.c
+		philo_atoi.c philo_atoi_util.c philo_err.c philo_main.c \
+		philo_time.c philo_checker.c philo_thread.c philo_setter.c
 SRCS_BONUS = \
 
 OBJS = $(SRCS:.c=.o)
 OBJS_BONUS = $(SRCS_BONUS:.c=.o)
 DEPS = $(SRCS:.c=.d)
 DEPS_BONUS = $(SRCS_BONUS:.c=.d)
-CC = cc -Wall -Wextra -Werror -MMD -MP -g -fsanitize=thread
+CC = cc -Wall -Wextra -Werror -MMD -MP
 NAME = philo
 MANDA = .manda
 BONUS = .bonus
