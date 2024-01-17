@@ -6,7 +6,7 @@
 /*   By: minjacho <minjacho@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/28 12:38:13 by minjacho          #+#    #+#             */
-/*   Updated: 2024/01/17 10:39:54 by minjacho         ###   ########.fr       */
+/*   Updated: 2024/01/17 10:48:40 by minjacho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ int	main(int argc, char *argv[])
 	if (info.died)
 	{
 		pthread_mutex_lock(info.printer);
-		printf("%lld %3d died\n", check_time - info.start_time, info.died_philo);
+		printf("%lld %d died\n", check_time - info.start_time, info.died_philo);
 		pthread_mutex_unlock(info.printer);
 	}
 	free_resource(&info);

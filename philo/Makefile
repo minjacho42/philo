@@ -1,7 +1,8 @@
 .DEFAULT_GOAL := all
 SRCS = \
-		philo_atoi.c philo_free.c philo_init.c \
-		philo_main.c philo_thread.c philo_time.c philo_util.c
+		philo_atoi.c philo_alloc.c philo_init.c \
+		philo_main.c philo_thread.c philo_time.c \
+		philo_util.c philo_util_mutex.c
 SRCS_BONUS = \
 
 OBJS = $(SRCS:.c=.o)

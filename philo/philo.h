@@ -6,7 +6,7 @@
 /*   By: minjacho <minjacho@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/28 12:37:16 by minjacho          #+#    #+#             */
-/*   Updated: 2024/01/17 10:38:21 by minjacho         ###   ########.fr       */
+/*   Updated: 2024/01/17 10:52:34 by minjacho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,8 @@ int			ft_isspace(char c);
 int			ft_isdigit(char c);
 void		set_die(t_philo_arg *arg);
 int			get_die(t_philo_arg *arg);
+
+/*================philo_util_mutex.c================*/
 void		set_last_eat(t_philo_arg *arg);
 long long	get_last_eat(t_philo_arg *arg);
 void		set_eat_cnt(t_philo_arg *arg);
@@ -74,10 +76,11 @@ int			get_eat_cnt(t_philo_arg *arg);
 /*================philo_init.c================*/
 int			init_info(int argc, char **argv, t_info *info);
 
-/*================philo_thread.c================*/
+/*================philo_alloc.c================*/
 void		free_mutex(pthread_mutex_t *mutex, int size);
 void		kill_philo(t_info *info);
 void		free_resource(t_info *info);
+int			init_philo_args(t_info *info);
 
 /*================philo_thread.c================*/
 void		run_philo(t_info *info);
@@ -88,4 +91,5 @@ void		philo_print(t_philo_arg *arg, long long time, \
 /*================philo_time.c================*/
 long long	get_time_mili_sc(void);
 void		spend_time(long long time_to_spend);
+
 #endif

@@ -6,7 +6,7 @@
 /*   By: minjacho <minjacho@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/16 17:29:15 by minjacho          #+#    #+#             */
-/*   Updated: 2024/01/17 10:37:58 by minjacho         ###   ########.fr       */
+/*   Updated: 2024/01/17 10:52:45 by minjacho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,38 +42,4 @@ int	get_die(t_philo_arg *arg)
 	die = arg->died;
 	pthread_mutex_unlock(arg->die_mutex);
 	return (die);
-}
-
-void	set_last_eat(t_philo_arg *arg)
-{
-	pthread_mutex_lock(arg->last_eat_mutex);
-	arg->last_eat_time = get_time_mili_sc();
-	pthread_mutex_unlock(arg->last_eat_mutex);
-}
-
-long long	get_last_eat(t_philo_arg *arg)
-{
-	long long	time;
-
-	pthread_mutex_lock(arg->last_eat_mutex);
-	time = arg->last_eat_time;
-	pthread_mutex_unlock(arg->last_eat_mutex);
-	return (time);
-}
-
-void	set_eat_cnt(t_philo_arg *arg)
-{
-	pthread_mutex_lock(arg->eat_cnt_mutex);
-	arg->eat_cnt++;
-	pthread_mutex_unlock(arg->eat_cnt_mutex);
-}
-
-int	get_eat_cnt(t_philo_arg *arg)
-{
-	int	cnt;
-
-	pthread_mutex_lock(arg->eat_cnt_mutex);
-	cnt = arg->eat_cnt;
-	pthread_mutex_unlock(arg->eat_cnt_mutex);
-	return (cnt);
 }

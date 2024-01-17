@@ -6,13 +6,13 @@
 /*   By: minjacho <minjacho@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/16 17:31:46 by minjacho          #+#    #+#             */
-/*   Updated: 2024/01/17 10:36:43 by minjacho         ###   ########.fr       */
+/*   Updated: 2024/01/17 10:51:05 by minjacho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-static int	init_thread_info_sub(t_info *info)
+static int	create_mutex_array(t_info *info)
 {
 	int	idx;
 
@@ -37,6 +37,13 @@ static int	init_thread_info_sub(t_info *info)
 	idx = -1;
 	while (++idx < info->num_of_philo)
 		pthread_mutex_init(&info->eat_cnt_mutex[idx], NULL);
+	return (0);
+}
+
+static int	init_thread_info_sub(t_info *info)
+{
+	if (create_mutex_array(info))
+		return (1);
 	info->printer = malloc(sizeof(pthread_mutex_t));
 	if (!info->printer)
 	{
@@ -80,44 +87,6 @@ static int	init_thread_info(t_info *info)
 		pthread_mutex_init(&info->die_mutex[idx], NULL);
 	if (init_thread_info_sub(info))
 		return (1);
-	return (0);
-}
-
-static void	init_philo_arg(t_info *info, t_philo_arg *arg, int idx)
-{
-	arg->seat_idx = idx + 1;
-	arg->l_fork = &info->forks[idx];
-	arg->r_fork = &info->forks[(idx + 1) % info->num_of_philo];
-	arg->die_mutex = &info->die_mutex[idx];
-	arg->last_eat_mutex = &info->last_eat_mutex[idx];
-	arg->eat_cnt_mutex = &info->eat_cnt_mutex[idx];
-	arg->printer = info->printer;
-	arg->num_of_philo = info->num_of_philo;
-	arg->time_to_eat = info->time_to_eat;
-	arg->time_to_sleep = info->time_to_sleep;
-	arg->time_to_die = info->time_to_die;
-	arg->eat_cnt = 0;
-	arg->last_eat_time = 0;
-}
-
-static int	init_philo_args(t_info *info)
-{
-	int	idx;
-
-	idx = 0;
-	info->philo_args = malloc(sizeof(t_philo_arg) * info->num_of_philo);
-	if (!info->philo_args)
-	{
-		free_mutex(info->forks, info->num_of_philo);
-		free_mutex(info->printer, 1);
-		free(info->philo_thread);
-		return (1);
-	}
-	while (idx < info->num_of_philo)
-	{
-		init_philo_arg(info, &info->philo_args[idx], idx);
-		idx++;
-	}
 	return (0);
 }
 
