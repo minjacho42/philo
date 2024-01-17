@@ -6,7 +6,7 @@
 /*   By: minjacho <minjacho@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/16 17:31:46 by minjacho          #+#    #+#             */
-/*   Updated: 2024/01/16 23:56:37 by minjacho         ###   ########.fr       */
+/*   Updated: 2024/01/17 10:36:43 by minjacho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,12 +26,24 @@ static int	init_thread_info_sub(t_info *info)
 	idx = -1;
 	while (++idx < info->num_of_philo)
 		pthread_mutex_init(&info->last_eat_mutex[idx], NULL);
+	info->eat_cnt_mutex = malloc(sizeof(pthread_mutex_t) * info->num_of_philo);
+	if (!info->eat_cnt_mutex)
+	{
+		free_mutex(info->forks, info->num_of_philo);
+		free_mutex(info->die_mutex, info->num_of_philo);
+		free_mutex(info->last_eat_mutex, info->num_of_philo);
+		return (1);
+	}
+	idx = -1;
+	while (++idx < info->num_of_philo)
+		pthread_mutex_init(&info->eat_cnt_mutex[idx], NULL);
 	info->printer = malloc(sizeof(pthread_mutex_t));
 	if (!info->printer)
 	{
 		free_mutex(info->forks, info->num_of_philo);
 		free_mutex(info->die_mutex, info->num_of_philo);
 		free_mutex(info->last_eat_mutex, info->num_of_philo);
+		free_mutex(info->eat_cnt_mutex, info->num_of_philo);
 		return (1);
 	}
 	info->philo_thread = malloc(sizeof(pthread_t) * info->num_of_philo);
@@ -40,6 +52,7 @@ static int	init_thread_info_sub(t_info *info)
 		free_mutex(info->forks, info->num_of_philo);
 		free_mutex(info->die_mutex, info->num_of_philo);
 		free_mutex(info->last_eat_mutex, info->num_of_philo);
+		free_mutex(info->eat_cnt_mutex, info->num_of_philo);
 		free_mutex(info->printer, 1);
 		return (1);
 	}
@@ -77,6 +90,7 @@ static void	init_philo_arg(t_info *info, t_philo_arg *arg, int idx)
 	arg->r_fork = &info->forks[(idx + 1) % info->num_of_philo];
 	arg->die_mutex = &info->die_mutex[idx];
 	arg->last_eat_mutex = &info->last_eat_mutex[idx];
+	arg->eat_cnt_mutex = &info->eat_cnt_mutex[idx];
 	arg->printer = info->printer;
 	arg->num_of_philo = info->num_of_philo;
 	arg->time_to_eat = info->time_to_eat;

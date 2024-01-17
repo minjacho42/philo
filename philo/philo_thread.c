@@ -6,7 +6,7 @@
 /*   By: minjacho <minjacho@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/12 13:00:47 by minjacho          #+#    #+#             */
-/*   Updated: 2024/01/17 00:44:50 by minjacho         ###   ########.fr       */
+/*   Updated: 2024/01/17 10:39:23 by minjacho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ static int	first_think(t_philo_arg *arg)
 static int	philo_think(t_philo_arg *arg)
 {
 	philo_print(arg, get_time_mili_sc(), "is thinking", 0);
-	if (arg->eat_cnt == 0)
+	if (get_eat_cnt(arg) == 0)
 		first_think(arg);
 	pthread_mutex_lock(arg->l_fork);
 	philo_print(arg, get_time_mili_sc(), "has taken a fork", 0);
@@ -45,7 +45,6 @@ void	*philo_routine(void *philo_arg)
 	t_philo_arg	*arg;
 
 	arg = (t_philo_arg *)philo_arg;
-	arg->eat_cnt = 0;
 	while (!get_die(arg))
 	{
 		philo_think(arg);
@@ -60,7 +59,7 @@ void	*philo_routine(void *philo_arg)
 		spend_time(arg->time_to_eat);
 		pthread_mutex_unlock(arg->l_fork);
 		pthread_mutex_unlock(arg->r_fork);
-		arg->eat_cnt++;
+		set_eat_cnt(arg);
 		if (get_die(arg))
 			break ;
 		philo_print(arg, get_time_mili_sc(), "is sleeping", 0);

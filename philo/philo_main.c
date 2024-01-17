@@ -6,7 +6,7 @@
 /*   By: minjacho <minjacho@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/28 12:38:13 by minjacho          #+#    #+#             */
-/*   Updated: 2024/01/16 23:52:30 by minjacho         ###   ########.fr       */
+/*   Updated: 2024/01/17 10:39:54 by minjacho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ static long long	monitor_main(t_info *info)
 			if (check_time - get_last_eat(&info->philo_args[idx]) > \
 					info->time_to_die)
 				info->died = 1;
-			if (info->must_eat > 0 && info->philo_args[idx].eat_cnt >= \
+			if (info->must_eat > 0 && get_eat_cnt(&info->philo_args[idx]) >= \
 					info->must_eat)
 				complete_eat++;
 			idx++;

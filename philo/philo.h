@@ -6,7 +6,7 @@
 /*   By: minjacho <minjacho@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/28 12:37:16 by minjacho          #+#    #+#             */
-/*   Updated: 2024/01/17 00:25:47 by minjacho         ###   ########.fr       */
+/*   Updated: 2024/01/17 10:38:21 by minjacho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ typedef struct s_philo_arg
 	pthread_mutex_t	*printer;
 	pthread_mutex_t	*die_mutex;
 	pthread_mutex_t	*last_eat_mutex;
+	pthread_mutex_t	*eat_cnt_mutex;
 	int				num_of_philo;
 	long long		time_to_die;
 	long long		time_to_eat;
@@ -45,6 +46,7 @@ typedef struct s_info
 	pthread_mutex_t	*printer;
 	pthread_mutex_t	*die_mutex;
 	pthread_mutex_t	*last_eat_mutex;
+	pthread_mutex_t	*eat_cnt_mutex;
 	int				num_of_philo;
 	long long		time_to_die;
 	long long		time_to_eat;
@@ -66,6 +68,8 @@ void		set_die(t_philo_arg *arg);
 int			get_die(t_philo_arg *arg);
 void		set_last_eat(t_philo_arg *arg);
 long long	get_last_eat(t_philo_arg *arg);
+void		set_eat_cnt(t_philo_arg *arg);
+int			get_eat_cnt(t_philo_arg *arg);
 
 /*================philo_init.c================*/
 int			init_info(int argc, char **argv, t_info *info);
