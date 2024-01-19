@@ -22,15 +22,15 @@ bonus :
 	@echo "PHILO : make BONUS"
 	@make $(BONUS)
 
-$(NAME) : $(LIBFT) $(OBJS)
+$(NAME) : $(OBJS)
 	@make $(MANDA)
 
-$(MANDA) : $(LIBFT) $(OBJS)
+$(MANDA) : $(OBJS)
 	@rm -rf $(BONUS)
 	@touch $(MANDA)
 	@$(CC) -o $(NAME) $(OBJS)
 
-$(BONUS) : $(LIBFT) $(OBJS_BONUS)
+$(BONUS) : $(OBJS_BONUS)
 	@rm -rf $(MANDA)
 	@touch $(BONUS)
 	@$(CC) -o $(NAME) $(OBJS_BONUS)
