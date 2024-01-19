@@ -6,7 +6,7 @@
 /*   By: minjacho <minjacho@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/17 13:22:41 by minjacho          #+#    #+#             */
-/*   Updated: 2024/01/17 21:19:08 by minjacho         ###   ########.fr       */
+/*   Updated: 2024/01/19 13:14:11 by minjacho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ int	init_mutex_list(t_args *args, t_mutexs *mutexs)
 		{
 			free_one_mutex(mutexs->forks, args->num_of_philo);
 			free_one_mutex(mutexs->cnt_mutex, args->num_of_philo);
+			free_one_mutex(mutexs->last_eat_mutex, args->num_of_philo);
 			return (1);
 		}
 		idx++;

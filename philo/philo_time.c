@@ -6,7 +6,7 @@
 /*   By: minjacho <minjacho@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/17 14:58:00 by minjacho          #+#    #+#             */
-/*   Updated: 2024/01/17 20:59:56 by minjacho         ###   ########.fr       */
+/*   Updated: 2024/01/19 13:18:08 by minjacho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,13 +49,12 @@ void	spend_time(long long time)
 void	print_state(t_philo_info *philo_info, int state)
 {
 	char		*str;
-	long long	time;
 
-	time = get_time_milisc();
 	pthread_mutex_lock(philo_info->mutexs->printer);
 	if (state == 5)
 	{
-		printf("%lld %d %s\n", time - philo_info->arg->start_time, \
+		printf("%lld %d %s\n", get_time_milisc() - \
+					philo_info->arg->start_time, \
 					philo_info->seat_idx, "died");
 		state = 0;
 	}
@@ -70,7 +69,8 @@ void	print_state(t_philo_info *philo_info, int state)
 	else if (state == 4)
 		str = "has taken a fork";
 	if (state)
-		printf("%lld %d %s\n", time - philo_info->arg->start_time, \
+		printf("%lld %d %s\n", get_time_milisc() - \
+					philo_info->arg->start_time, \
 					philo_info->seat_idx, str);
 	pthread_mutex_unlock(philo_info->mutexs->printer);
 }

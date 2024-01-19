@@ -6,13 +6,13 @@
 /*   By: minjacho <minjacho@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/17 13:34:20 by minjacho          #+#    #+#             */
-/*   Updated: 2024/01/17 21:17:37 by minjacho         ###   ########.fr       */
+/*   Updated: 2024/01/19 13:21:09 by minjacho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	ft_strlen(char *str)
+int	ft_strlen(const char *str)
 {
 	int	i;
 
@@ -24,7 +24,9 @@ int	ft_strlen(char *str)
 
 int	print_err(char *err_str)
 {
-	write(2, "philo :", 8);
+	const char	*bin_name = "philo: ";
+
+	write(2, bin_name, ft_strlen(bin_name));
 	write(2, err_str, ft_strlen(err_str));
 	write(2, "\n", 1);
 	return (1);
