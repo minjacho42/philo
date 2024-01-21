@@ -61,9 +61,6 @@ int	init_mutex_list(t_args *args, t_mutexs *mutexs)
 
 int	create_mutex_list(t_args *args, t_mutexs *mutexs)
 {
-	int	idx;
-
-	idx = 0;
 	mutexs->forks = malloc(sizeof(pthread_mutex_t) * args->num_of_philo);
 	if (!mutexs->forks)
 		return (1);
